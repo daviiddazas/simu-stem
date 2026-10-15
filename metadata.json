@@ -1,0 +1,6 @@
+{
+  "name": "Simulador Ambiental Orlando Fals Borda",
+  "description": "Simulación interactiva y modelo matemático de gestión y acumulación de residuos sólidos en el entorno del Colegio Orlando Fals Borda.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
