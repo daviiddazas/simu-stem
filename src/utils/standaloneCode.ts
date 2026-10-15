@@ -262,14 +262,14 @@ export const STANDALONE_SIMULATION_HTML = `<!DOCTYPE html>
 <body data-theme="dia">
   <div class="container">
     <header>
-      <span class="badge">Simulación Interdisciplinaria · Res. 2184 / PRAE</span>
-      <h1>Colegio Orlando Fals Borda · Modelo de Acumulación de Residuos</h1>
-      <p class="subtitle">Análisis matemático y espacial de dinámicas de saturación, comercio informal y flujos escolares.</p>
+      <span class="badge">Laboratorio Ambiental · Ciencia y Acción Participativa (IAP)</span>
+      <h1>EcoLab Fals Borda · ¿Podemos Evitar el Colapso de Basuras?</h1>
+      <p class="subtitle">Ponte en los zapatos de un científico ambiental: interactúa con los valores, analiza los picos de saturación dS/dt y activa soluciones.</p>
     </header>
 
     <!-- Panel de Botones: Selección de Ambiente -->
     <div class="card">
-      <div class="section-title">1. Selección de Ambientes Escolares</div>
+      <div class="section-title">Puntos Críticos del Colegio Fals Borda</div>
       <div class="button-group" id="envButtons">
         <button class="btn-select active" onclick="setEnvironment('entrada')">
           <strong>Entrada Principal</strong><br>
@@ -285,7 +285,7 @@ export const STANDALONE_SIMULATION_HTML = `<!DOCTYPE html>
         </button>
       </div>
 
-      <div class="section-title" style="margin-top:14px;">2. Tonalidades y Temas de Visualización Suave (Pastel)</div>
+      <div class="section-title" style="margin-top:14px;">Modo de Visualización</div>
       <div class="button-group" id="themeButtons">
         <button class="btn-select active" onclick="setTheme('dia')">
           <strong>Modo Día Suave</strong><br>

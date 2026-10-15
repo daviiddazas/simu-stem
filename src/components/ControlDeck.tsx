@@ -1,7 +1,7 @@
 /**
- * Panel de Control de la Simulación
- * Botones de ambientes, cambio de tonalidades/temas e intervenciones
- * Con botón para alternar entre Modo Claro y Modo Oscuro y adaptación total de letra/superficie
+ * Panel de Control Interactivo y Pedagógico de la Simulación
+ * Permite a los estudiantes interactuar directamente mediante botones con los valores,
+ * con explicaciones claras de la problemática ambiental y de las soluciones en cada punto.
  */
 
 import React from 'react';
@@ -19,6 +19,12 @@ import {
   ShieldCheck,
   Sun,
   Moon,
+  Plus,
+  Minus,
+  HelpCircle,
+  Flame,
+  CheckCircle2,
+  AlertTriangle,
 } from 'lucide-react';
 
 interface ControlDeckProps {
@@ -69,25 +75,102 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
     }));
   };
 
+  // Botones de Escenarios Rápidos de Prueba (Casos de Estudio para Estudiantes)
+  const applyScenario = (type: 'crisis' | 'habitual' | 'solucion') => {
+    if (type === 'crisis') {
+      onParamsChange((prev) => ({
+        ...prev,
+        studentCount: 2200,
+        activeBins: 2,
+        informalStalls: 7,
+        generationRatePerStudent: 45,
+        civicCultureFactor: 0.2,
+        interventions: {
+          synchronizedCollection: false,
+          ecologicalIslands: false,
+          informalVendorAgreement: false,
+          studentBrigade: false,
+        },
+      }));
+    } else if (type === 'habitual') {
+      onParamsChange((prev) => ({
+        ...prev,
+        studentCount: 1600,
+        activeBins: 3,
+        informalStalls: 4,
+        generationRatePerStudent: 32,
+        civicCultureFactor: 0.5,
+        interventions: {
+          synchronizedCollection: false,
+          ecologicalIslands: true,
+          informalVendorAgreement: false,
+          studentBrigade: false,
+        },
+      }));
+    } else {
+      // Solución Integral Fals Borda
+      onParamsChange((prev) => ({
+        ...prev,
+        studentCount: 1600,
+        activeBins: 4,
+        informalStalls: 3,
+        generationRatePerStudent: 25,
+        civicCultureFactor: 0.85,
+        interventions: {
+          synchronizedCollection: true,
+          ecologicalIslands: true,
+          informalVendorAgreement: true,
+          studentBrigade: true,
+        },
+      }));
+    }
+  };
+
+  // Ajustadores rápidos de valores (+ / -)
+  const adjustStudents = (delta: number) => {
+    onParamsChange((prev) => ({
+      ...prev,
+      studentCount: Math.min(2800, Math.max(800, prev.studentCount + delta)),
+    }));
+  };
+
+  const adjustBins = (delta: number) => {
+    onParamsChange((prev) => ({
+      ...prev,
+      activeBins: Math.min(6, Math.max(1, prev.activeBins + delta)),
+    }));
+  };
+
+  const adjustStalls = (delta: number) => {
+    onParamsChange((prev) => ({
+      ...prev,
+      informalStalls: Math.min(10, Math.max(0, prev.informalStalls + delta)),
+    }));
+  };
+
+  const setCulturePreset = (val: number) => {
+    onParamsChange((prev) => ({
+      ...prev,
+      civicCultureFactor: val,
+    }));
+  };
+
   return (
     <div className="space-y-4">
-      {/* 1. Selector de Ambientes e Interactividad por Botones */}
+      {/* 1. Selección de Ambientes Escolares (Sin numeración mecánica) */}
       <div
         className="p-4 rounded-2xl border transition-colors shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
           <div className="flex items-center gap-2">
             <Layers className="w-4 h-4" style={{ color: theme.accentPrimary }} />
-            <span
-              className="text-xs font-semibold tracking-wide uppercase"
-              style={{ color: theme.textSecondary }}
-            >
-              Selección de Ambientes Escolares
-            </span>
+            <h3 className="text-xs font-semibold tracking-wide uppercase" style={{ color: theme.textPrimary }}>
+              Puntos Críticos del Colegio Fals Borda
+            </h3>
           </div>
-          <span className="text-xs" style={{ color: theme.textSecondary }}>
-            Colegio Orlando Fals Borda
+          <span className="text-[11px]" style={{ color: theme.textSecondary }}>
+            Elige la zona que deseas investigar
           </span>
         </div>
 
@@ -111,10 +194,7 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
               >
                 <div>
                   <div className="font-semibold text-[13px] mb-1">{env.name}</div>
-                  <div
-                    className="text-[11px] leading-relaxed line-clamp-2"
-                    style={{ color: theme.textSecondary }}
-                  >
+                  <div className="text-[11px] leading-relaxed line-clamp-2" style={{ color: theme.textSecondary }}>
                     {env.tagline}
                   </div>
                 </div>
@@ -132,7 +212,7 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
         </div>
       </div>
 
-      {/* 2. Selector de Tonalidades y Botón de Modo Oscuro / Claro */}
+      {/* 2. Modos de Visualización y Alternador de Luz (Sin numeración mecánica) */}
       <div
         className="p-4 rounded-2xl border transition-colors shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
@@ -140,24 +220,20 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4" style={{ color: theme.accentPrimary }} />
-            <span
-              className="text-xs font-semibold tracking-wide uppercase"
-              style={{ color: theme.textSecondary }}
-            >
-              Tonalidades Suaves y Modo de Iluminación
-            </span>
+            <h3 className="text-xs font-semibold tracking-wide uppercase" style={{ color: theme.textPrimary }}>
+              Modo de Visualización
+            </h3>
           </div>
 
-          {/* Botón interactivo para cambiar el ambiente de oscuro a claro */}
+          {/* Botón para alternar ambiente de Oscuro a Claro con texto adaptable */}
           <button
             onClick={onToggleColorMode}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all shadow-sm self-start sm:self-auto hover:opacity-90"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all shadow-xs self-start sm:self-auto hover:opacity-90 active:scale-95"
             style={{
               backgroundColor: theme.bgPanel,
               borderColor: theme.accentPrimary,
               color: theme.textPrimary,
             }}
-            title={colorMode === 'oscuro' ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'}
           >
             {colorMode === 'oscuro' ? (
               <>
@@ -166,7 +242,7 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
               </>
             ) : (
               <>
-                <Moon className="w-3.5 h-3.5 text-slate-600" />
+                <Moon className="w-3.5 h-3.5 text-slate-700" />
                 <span>Cambiar a Modo Oscuro</span>
               </>
             )}
@@ -218,13 +294,95 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
         </div>
       </div>
 
-      {/* 3. Barra de Control de Reproducción y Tiempo Continuo */}
+      {/* 3. Escenarios Rápidos de Prueba (Casos de Estudio con Botones Directos) */}
+      <div
+        className="p-4 rounded-2xl border transition-colors shadow-sm space-y-2.5"
+        style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Flame className="w-4 h-4 text-amber-500" />
+            <h3 className="text-xs font-semibold tracking-wide uppercase" style={{ color: theme.textPrimary }}>
+              Prueba Rápida: ¿Qué Pasa si Cambiamos las Condiciones?
+            </h3>
+          </div>
+          <span className="text-[11px]" style={{ color: theme.textSecondary }}>
+            1 clic para simular
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          {/* Botón Crisis */}
+          <button
+            onClick={() => applyScenario('crisis')}
+            className="p-2.5 rounded-xl border text-left transition-all hover:opacity-90 active:scale-98 flex flex-col justify-between"
+            style={{
+              backgroundColor: theme.bgPanel,
+              borderColor: '#D27979',
+              color: theme.textPrimary,
+            }}
+          >
+            <div>
+              <div className="flex items-center gap-1.5 font-bold text-xs text-rose-500">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span>Crisis: Sin Control</span>
+              </div>
+              <p className="text-[10.5px] mt-1 leading-snug" style={{ color: theme.textSecondary }}>
+                <strong>Problema:</strong> 2,200 alumnos, 7 puestos ambulantes y solo 2 canecas. La basura colapsa a las 11:30 AM.
+              </p>
+            </div>
+          </button>
+
+          {/* Botón Día Habitual */}
+          <button
+            onClick={() => applyScenario('habitual')}
+            className="p-2.5 rounded-xl border text-left transition-all hover:opacity-90 active:scale-98 flex flex-col justify-between"
+            style={{
+              backgroundColor: theme.bgPanel,
+              borderColor: theme.borderColor,
+              color: theme.textPrimary,
+            }}
+          >
+            <div>
+              <div className="flex items-center gap-1.5 font-bold text-xs text-amber-500">
+                <Clock className="w-3.5 h-3.5" />
+                <span>Día Habitual</span>
+              </div>
+              <p className="text-[10.5px] mt-1 leading-snug" style={{ color: theme.textSecondary }}>
+                <strong>Problema:</strong> Sin recolección diurna de la UAESP. Se llena a la 1:30 PM y desborda en la tarde.
+              </p>
+            </div>
+          </button>
+
+          {/* Botón Solución IAP */}
+          <button
+            onClick={() => applyScenario('solucion')}
+            className="p-2.5 rounded-xl border text-left transition-all hover:opacity-90 active:scale-98 flex flex-col justify-between"
+            style={{
+              backgroundColor: theme.bgPanel,
+              borderColor: theme.accentPrimary,
+              color: theme.textPrimary,
+            }}
+          >
+            <div>
+              <div className="flex items-center gap-1.5 font-bold text-xs text-emerald-600">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Solución Fals Borda</span>
+              </div>
+              <p className="text-[10.5px] mt-1 leading-snug" style={{ color: theme.textSecondary }}>
+                <strong>Solución:</strong> Camión a la 1:15 PM, islas de 3 colores, pacto de vendedores y brigada estudiantil.
+              </p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* 4. Barra de Tiempo y Reproducción */}
       <div
         className="p-4 rounded-2xl border transition-colors space-y-3 shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Botones de Play / Pause / Reset */}
           <div className="flex items-center gap-2">
             <button
               onClick={onTogglePlay}
@@ -244,7 +402,6 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
 
-            {/* Velocidad */}
             <div
               className="flex items-center gap-1 p-0.5 rounded-lg border text-xs"
               style={{ borderColor: theme.borderColor }}
@@ -266,7 +423,6 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
             </div>
           </div>
 
-          {/* Reloj horario digital */}
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 opacity-70" style={{ color: theme.textSecondary }} />
             <span
@@ -282,7 +438,6 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
           </div>
         </div>
 
-        {/* Línea de Tiempo Deslizante */}
         <div>
           <input
             type="range"
@@ -297,7 +452,7 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
             className="flex justify-between text-[10px] font-mono mt-1"
             style={{ color: theme.textSecondary }}
           >
-            <span>06:00 (Entrada)</span>
+            <span>06:00 (Entrada Mañana)</span>
             <span>09:45 (Recreo)</span>
             <span>12:15 (Cambio Jornada)</span>
             <span>15:30 (Recreo Tarde)</span>
@@ -306,129 +461,226 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
         </div>
       </div>
 
-      {/* 4. Ajustes Paramétricos de Variables Matemáticas */}
+      {/* 5. Botones Interactivos para Modificar Valores con Explicación de Problema y Solución */}
       <div
-        className="p-4 rounded-2xl border transition-colors space-y-3 shadow-sm"
+        className="p-4 rounded-2xl border transition-colors space-y-3.5 shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4" style={{ color: theme.accentPrimary }} />
-            <span
-              className="text-xs font-semibold tracking-wide uppercase"
-              style={{ color: theme.textSecondary }}
-            >
-              Variables Matemáticas del Modelo
-            </span>
+            <h3 className="text-xs font-semibold tracking-wide uppercase" style={{ color: theme.textPrimary }}>
+              Interacción Directa con los Valores del Modelo
+            </h3>
           </div>
-          <span className="text-xs font-mono" style={{ color: theme.textSecondary }}>
-            Colegio Fals Borda (~1,600 est.)
+          <span className="text-[11px]" style={{ color: theme.textSecondary }}>
+            Haz clic en los botones para experimentar
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-          {/* Estudiantes */}
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span style={{ color: theme.textSecondary }}>Población escolar activa (N):</span>
-              <span className="font-mono font-medium" style={{ color: theme.textPrimary }}>
-                {params.studentCount} estudiantes
+        {/* Variable 1: Estudiantes Activos */}
+        <div
+          className="p-3 rounded-xl border transition-colors space-y-2"
+          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span className="text-xs font-semibold" style={{ color: theme.textPrimary }}>
+                Población Escolar Activa: {params.studentCount} estudiantes
               </span>
+              <p className="text-[11px] leading-tight mt-0.5" style={{ color: theme.textSecondary }}>
+                <strong>¿El Problema?:</strong> A mayor cantidad de estudiantes transitando en horas punta, mayor es la generación repentina de empaques de refrigerio y botellas.
+              </p>
             </div>
-            <input
-              type="range"
-              min={800}
-              max={2800}
-              step={100}
-              value={params.studentCount}
-              onChange={(e) =>
-                onParamsChange((prev) => ({ ...prev, studentCount: parseInt(e.target.value) }))
-              }
-              className="w-full cursor-pointer accent-emerald-600 h-1.5"
-            />
-          </div>
 
-          {/* Tasa de generación por estudiante */}
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span style={{ color: theme.textSecondary }}>Generación por estudiante (g_e):</span>
-              <span className="font-mono font-medium" style={{ color: theme.textPrimary }}>
-                {params.generationRatePerStudent} g/est-h
-              </span>
-            </div>
-            <input
-              type="range"
-              min={10}
-              max={70}
-              step={5}
-              value={params.generationRatePerStudent}
-              onChange={(e) =>
-                onParamsChange((prev) => ({
-                  ...prev,
-                  generationRatePerStudent: parseInt(e.target.value),
-                }))
-              }
-              className="w-full cursor-pointer accent-emerald-600 h-1.5"
-            />
-          </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => adjustStudents(-200)}
+                className="p-1.5 rounded-lg border hover:opacity-80 text-xs font-semibold flex items-center gap-1 shadow-xs"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+                title="Reducir 200 estudiantes"
+              >
+                <Minus className="w-3 h-3" />
+                <span>200</span>
+              </button>
 
-          {/* Número de Contenedores */}
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span style={{ color: theme.textSecondary }}>Puntos de disposición (N_c):</span>
-              <span className="font-mono font-medium" style={{ color: theme.textPrimary }}>
-                {params.activeBins} contenedores ({params.activeBins * params.binCapacityLiters}L)
-              </span>
-            </div>
-            <input
-              type="range"
-              min={1}
-              max={6}
-              step={1}
-              value={params.activeBins}
-              onChange={(e) =>
-                onParamsChange((prev) => ({ ...prev, activeBins: parseInt(e.target.value) }))
-              }
-              className="w-full cursor-pointer accent-emerald-600 h-1.5"
-            />
-          </div>
+              <button
+                onClick={() => adjustStudents(200)}
+                className="p-1.5 rounded-lg border hover:opacity-80 text-xs font-semibold flex items-center gap-1 shadow-xs"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+                title="Aumentar 200 estudiantes"
+              >
+                <Plus className="w-3 h-3" />
+                <span>200</span>
+              </button>
 
-          {/* Puestos de Comercio Informal */}
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span style={{ color: theme.textSecondary }}>Puestos comercio informal (P_inf):</span>
-              <span className="font-mono font-medium" style={{ color: theme.textPrimary }}>
-                {params.informalStalls} puestos
-              </span>
+              <button
+                onClick={() => onParamsChange((prev) => ({ ...prev, studentCount: 2400 }))}
+                className="px-2 py-1 rounded-lg border text-[11px] font-mono hover:opacity-90"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+              >
+                Día de Evento (2,400)
+              </button>
             </div>
-            <input
-              type="range"
-              min={0}
-              max={10}
-              step={1}
-              value={params.informalStalls}
-              onChange={(e) =>
-                onParamsChange((prev) => ({ ...prev, informalStalls: parseInt(e.target.value) }))
-              }
-              className="w-full cursor-pointer accent-emerald-600 h-1.5"
-            />
+          </div>
+        </div>
+
+        {/* Variable 2: Canastillas y Capacidad */}
+        <div
+          className="p-3 rounded-xl border transition-colors space-y-2"
+          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span className="text-xs font-semibold" style={{ color: theme.textPrimary }}>
+                Puntos de Disposición: {params.activeBins} canecas ({params.activeBins * params.binCapacityLiters} Litros)
+              </span>
+              <p className="text-[11px] leading-tight mt-0.5" style={{ color: theme.textSecondary }}>
+                <strong>¿La Solución?:</strong> Instalar más canecas amplía el límite físico $C_{'{max}'}$ y posterga la hora crítica de desborde hacia el andén.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => adjustBins(-1)}
+                className="p-1.5 rounded-lg border hover:opacity-80 text-xs font-semibold flex items-center gap-1 shadow-xs"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+                title="Quitar 1 canastilla"
+              >
+                <Minus className="w-3 h-3" />
+                <span>1 Caneca</span>
+              </button>
+
+              <button
+                onClick={() => adjustBins(1)}
+                className="p-1.5 rounded-lg border hover:opacity-80 text-xs font-semibold flex items-center gap-1 shadow-xs"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+                title="Agregar 1 canastilla"
+              >
+                <Plus className="w-3 h-3" />
+                <span>1 Caneca</span>
+              </button>
+
+              <button
+                onClick={() => onParamsChange((prev) => ({ ...prev, activeBins: 4 }))}
+                className="px-2 py-1 rounded-lg border text-[11px] font-mono hover:opacity-90"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+              >
+                Batería Óptima (4)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Variable 3: Puestos de Comercio Ambulante */}
+        <div
+          className="p-3 rounded-xl border transition-colors space-y-2"
+          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span className="text-xs font-semibold" style={{ color: theme.textPrimary }}>
+                Puestos de Comercio Informal: {params.informalStalls} puestos
+              </span>
+              <p className="text-[11px] leading-tight mt-0.5" style={{ color: theme.textSecondary }}>
+                <strong>¿El Problema?:</strong> Cada puesto entrega icopor y plástico de un solo uso que ocupan hasta el 40% del volumen de las canastillas del colegio.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => adjustStalls(-1)}
+                className="p-1.5 rounded-lg border hover:opacity-80 text-xs font-semibold flex items-center gap-1 shadow-xs"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+                title="Reducir 1 puesto"
+              >
+                <Minus className="w-3 h-3" />
+                <span>1 Puesto</span>
+              </button>
+
+              <button
+                onClick={() => adjustStalls(1)}
+                className="p-1.5 rounded-lg border hover:opacity-80 text-xs font-semibold flex items-center gap-1 shadow-xs"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+                title="Aumentar 1 puesto"
+              >
+                <Plus className="w-3 h-3" />
+                <span>1 Puesto</span>
+              </button>
+
+              <button
+                onClick={() => onParamsChange((prev) => ({ ...prev, informalStalls: 0 }))}
+                className="px-2 py-1 rounded-lg border text-[11px] font-mono hover:opacity-90"
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+              >
+                Cero Ambulantes (0)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Variable 4: Cultura Ciudadana y Separación en la Fuente */}
+        <div
+          className="p-3 rounded-xl border transition-colors space-y-2"
+          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span className="text-xs font-semibold" style={{ color: theme.textPrimary }}>
+                Cultura y Separación en la Fuente: {Math.round(params.civicCultureFactor * 100)}%
+              </span>
+              <p className="text-[11px] leading-tight mt-0.5" style={{ color: theme.textSecondary }}>
+                <strong>¿La Solución?:</strong> Cuando los estudiantes separan botellas y cartón, hasta el 45% de los residuos no entra al contenedor ordinario y se recicla.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setCulturePreset(0.25)}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all ${
+                  params.civicCultureFactor <= 0.35 ? 'font-bold ring-1 shadow-xs' : 'opacity-80'
+                }`}
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+              >
+                Baja (25%)
+              </button>
+
+              <button
+                onClick={() => setCulturePreset(0.6)}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all ${
+                  params.civicCultureFactor > 0.35 && params.civicCultureFactor < 0.75
+                    ? 'font-bold ring-1 shadow-xs'
+                    : 'opacity-80'
+                }`}
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+              >
+                Media (60%)
+              </button>
+
+              <button
+                onClick={() => setCulturePreset(0.9)}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all ${
+                  params.civicCultureFactor >= 0.75 ? 'font-bold ring-1 shadow-xs' : 'opacity-80'
+                }`}
+                style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor, color: theme.textPrimary }}
+              >
+                Alta IAP (90%)
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 5. Intervenciones Estratégicas y Mitigación (What-If) */}
+      {/* 6. Intervenciones Estratégicas y Mitigación */}
       <div
         className="p-4 rounded-2xl border transition-colors space-y-2.5 shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
       >
         <div className="flex items-center gap-2 mb-1">
           <ShieldCheck className="w-4 h-4" style={{ color: theme.accentPrimary }} />
-          <span
-            className="text-xs font-semibold tracking-wide uppercase"
-            style={{ color: theme.textSecondary }}
-          >
-            Intervenciones de Mitigación Activas (What-If)
-          </span>
+          <h3 className="text-xs font-semibold tracking-wide uppercase" style={{ color: theme.textPrimary }}>
+            Activa o Desactiva las Soluciones Estratégicas
+          </h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -447,7 +699,7 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
                 Recolección Sincronizada UAESP (13:15)
               </div>
               <div className="text-[11px] leading-tight" style={{ color: theme.textSecondary }}>
-                Vaciado programado justo al cierre del cambio de jornada.
+                Vaciado del camión justo al terminar el cambio de jornada escolar.
               </div>
             </div>
           </label>
@@ -487,7 +739,7 @@ export const ControlDeck: React.FC<ControlDeckProps> = ({
                 Pacto con Vendedores Ambulantes
               </div>
               <div className="text-[11px] leading-tight" style={{ color: theme.textSecondary }}>
-                Sustitución de icopor y acopio conjunto con comerciantes.
+                Sustitución de icopor y acopio propio con comerciantes.
               </div>
             </div>
           </label>

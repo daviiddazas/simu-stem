@@ -132,7 +132,7 @@ export default function App() {
           backgroundColor: colorMode === 'oscuro' ? 'rgba(30, 38, 33, 0.92)' : 'rgba(255, 255, 255, 0.92)',
         }}
       >
-        {/* Zona 1: Título de Marca de una sola línea */}
+        {/* Zona 1: Título de Marca llamativo */}
         <a
           href="#simulador"
           onClick={() => setActiveTab('simulador')}
@@ -143,7 +143,7 @@ export default function App() {
             className="w-3 h-3 rounded-full"
             style={{ backgroundColor: theme.accentPrimary }}
           />
-          <span>Colegio Orlando Fals Borda</span>
+          <span>EcoLab Fals Borda · Misión Territorio Limpio</span>
         </a>
 
         {/* Zona 2: 4-5 enlaces de navegación de una línea */}
@@ -337,7 +337,7 @@ export default function App() {
                       className="font-mono font-semibold uppercase px-2 py-0.5 rounded"
                       style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
                     >
-                      Simulación Ambiental Interdisciplinaria
+                      Laboratorio Ambiental · Ciencia y Acción Participativa (IAP)
                     </span>
                     <span className="opacity-40">·</span>
                     <span style={{ color: theme.textSecondary }}>Usme, Bogotá D.C.</span>
@@ -347,11 +347,11 @@ export default function App() {
                     className="text-xl md:text-3xl font-bold tracking-tight"
                     style={{ color: theme.textPrimary, textWrap: 'balance' }}
                   >
-                    Dinámica de Acumulación y Mitigación de Residuos en el Entorno Escolar
+                    ¿Podemos Evitar el Colapso? Simula y Resuelve la Basura en Nuestro Colegio
                   </h1>
 
                   <p className="text-xs md:text-sm leading-relaxed" style={{ color: theme.textSecondary }}>
-                    Herramienta pedagógica y matemática para analizar la saturación de contenedores ($dS/dt$), los picos de flujo peatonal escolar y el impacto del comercio informal en las inmediaciones del Colegio Orlando Fals Borda.
+                    Ponte en los zapatos de un científico ambiental: interactúa con los valores mediante los botones, descubre a qué hora exacta colapsan las canastillas del Colegio Orlando Fals Borda y activa las soluciones estratégicas para salvar nuestro espacio escolar.
                   </p>
                 </div>
 
