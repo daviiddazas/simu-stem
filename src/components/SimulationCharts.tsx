@@ -70,11 +70,12 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({
       >
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h3 className="text-sm font-semibold" style={{ color: theme.textPrimary }}>
-              Dinámica de Saturación del Contenedor S(t)
+            <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: theme.textPrimary }}>
+              <span>Dinámica de Saturación del Contenedor</span>
+              <span className="font-serif italic font-normal">S(t)</span>
             </h3>
             <p className="text-xs" style={{ color: theme.textSecondary }}>
-              Masa contenida vs. Umbral de Capacidad (C_max = {maxCapacityKg.toFixed(1)} kg)
+              Masa contenida vs. Umbral de Capacidad (<span className="font-serif italic">C</span><sub>max</sub> = {maxCapacityKg.toFixed(1)} kg)
             </p>
           </div>
 
@@ -210,8 +211,11 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({
         <div>
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-sm font-semibold" style={{ color: theme.textPrimary }}>
-                Tasa de Ingreso R_in(t) y Flujo Peatonal Φ(t)
+              <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: theme.textPrimary }}>
+                <span>Tasa de Ingreso</span>
+                <span className="font-serif italic font-normal">R<sub>in</sub>(t)</span>
+                <span>y Flujo Peatonal</span>
+                <span className="font-serif italic font-normal">Φ(t)</span>
               </h3>
               <p className="text-xs" style={{ color: theme.textSecondary }}>
                 Generación horaria asociada a picos escolares y comercio informal
@@ -221,7 +225,7 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({
               className="text-xs px-2 py-0.5 rounded-md font-mono"
               style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
             >
-              g_e = {params.generationRatePerStudent} g/est
+              <span className="font-serif italic font-normal">g<sub>e</sub></span> = {params.generationRatePerStudent} g/est
             </span>
           </div>
 

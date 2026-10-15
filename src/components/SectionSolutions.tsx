@@ -2,19 +2,25 @@
  * Sección 3: Soluciones Estratégicas y Mitigación Viable
  * Corto, Mediano y Largo Plazo - Colegio Orlando Fals Borda
  * Adaptativo a Modo Claro y Modo Oscuro con alta legibilidad
+ * Incluye botones interactivos para simular cada hecho directamente en el lienzo.
  */
 
 import React from 'react';
-import { ColorMode, ThemeId } from '../types';
+import { ColorMode, ThemeId, SolutionEventId } from '../types';
 import { getTheme } from '../utils/themeConfig';
-import { Zap, CalendarCheck, Landmark } from 'lucide-react';
+import { Zap, CalendarCheck, Landmark, Sparkles, Play, ArrowRight } from 'lucide-react';
 
 interface SectionSolutionsProps {
   themeId: ThemeId;
   colorMode: ColorMode;
+  onSimulateSolution?: (solId: SolutionEventId) => void;
 }
 
-export const SectionSolutions: React.FC<SectionSolutionsProps> = ({ themeId, colorMode }) => {
+export const SectionSolutions: React.FC<SectionSolutionsProps> = ({
+  themeId,
+  colorMode,
+  onSimulateSolution,
+}) => {
   const theme = getTheme(themeId, colorMode);
 
   return (
@@ -41,6 +47,22 @@ export const SectionSolutions: React.FC<SectionSolutionsProps> = ({ themeId, col
         <p className="mt-2 text-sm leading-relaxed" style={{ color: theme.textSecondary }}>
           Honrando el legado de Orlando Fals Borda y la Investigación Acción Participativa (IAP), la resolución de esta problemática no depende únicamente de instalar más canecas, sino de articular soluciones pedagógicas, logísticas e institucionales donde los estudiantes y vecinos sean sujetos activos de la transformación de su territorio.
         </p>
+
+        {onSimulateSolution && (
+          <div className="mt-4 pt-3 border-t flex items-center justify-between gap-3" style={{ borderColor: theme.borderColor }}>
+            <span className="text-xs" style={{ color: theme.textSecondary }}>
+              ¿Quieres comprobar la eficacia de estas soluciones en el modelo matemático?
+            </span>
+            <button
+              onClick={() => onSimulateSolution('allSolutions')}
+              className="px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 text-white shadow-xs transition-transform active:scale-95"
+              style={{ backgroundColor: '#2D6646' }}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Simular Todas las Soluciones en Vivo</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Matriz Temporal de Soluciones */}
@@ -58,6 +80,7 @@ export const SectionSolutions: React.FC<SectionSolutionsProps> = ({ themeId, col
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            {/* Medida 1.1 */}
             <div
               className="p-3.5 rounded-xl border flex flex-col justify-between"
               style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
@@ -70,28 +93,52 @@ export const SectionSolutions: React.FC<SectionSolutionsProps> = ({ themeId, col
                   Radicar solicitud formal ante la UAESP para incorporar un pase de vaciado y barrido mecánico exactamente al término del cambio de jornada, evitando que los residuos pasen la tarde expuestos en la acera.
                 </p>
               </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Impacto: -75% desborde vespertino
-              </span>
+              <div className="pt-3 border-t mt-3 flex items-center justify-between" style={{ borderColor: theme.borderColor }}>
+                <span className="text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
+                  -75% desborde
+                </span>
+                {onSimulateSolution && (
+                  <button
+                    onClick={() => onSimulateSolution('synchronizedCollection')}
+                    className="px-2 py-1 rounded-lg text-[10.5px] font-semibold text-white transition-transform active:scale-95"
+                    style={{ backgroundColor: theme.accentPrimary }}
+                  >
+                    Simular Hecho 🎬
+                  </button>
+                )}
+              </div>
             </div>
 
+            {/* Medida 1.2 */}
             <div
               className="p-3.5 rounded-xl border flex flex-col justify-between"
               style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
             >
               <div>
                 <h4 className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
-                  Puntos Ecológicos de Alto Caudal
+                  Islas Ecológicas de Alto Caudal
                 </h4>
                 <p className="leading-relaxed" style={{ color: theme.textSecondary }}>
                   Sustituir las canastillas unipersonales por baterías modulares triples con tapas basculantes codificadas (Blanco: aprovechables; Verde: orgánicos; Negro: no aprovechables), ubicadas estratégicamente en las líneas de deseo peatonal del acceso.
                 </p>
               </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Capacidad: +300% volumen
-              </span>
+              <div className="pt-3 border-t mt-3 flex items-center justify-between" style={{ borderColor: theme.borderColor }}>
+                <span className="text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
+                  +300% volumen
+                </span>
+                {onSimulateSolution && (
+                  <button
+                    onClick={() => onSimulateSolution('ecologicalIslands')}
+                    className="px-2 py-1 rounded-lg text-[10.5px] font-semibold text-white transition-transform active:scale-95"
+                    style={{ backgroundColor: theme.accentPrimary }}
+                  >
+                    Simular Hecho 🎬
+                  </button>
+                )}
+              </div>
             </div>
 
+            {/* Medida 1.3 */}
             <div
               className="p-3.5 rounded-xl border flex flex-col justify-between"
               style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
@@ -104,9 +151,20 @@ export const SectionSolutions: React.FC<SectionSolutionsProps> = ({ themeId, col
                   Estudiantes de grados 10° y 11° que cumplen servicio social obligatorio realizan jornadas de sensibilización lúdica y vigilancia comunitaria en las puertas durante los 35 minutos pico de entrada y salida.
                 </p>
               </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Cultura: +40% desvío selectivo
-              </span>
+              <div className="pt-3 border-t mt-3 flex items-center justify-between" style={{ borderColor: theme.borderColor }}>
+                <span className="text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
+                  +40% desvío
+                </span>
+                {onSimulateSolution && (
+                  <button
+                    onClick={() => onSimulateSolution('studentBrigade')}
+                    className="px-2 py-1 rounded-lg text-[10.5px] font-semibold text-white transition-transform active:scale-95"
+                    style={{ backgroundColor: theme.accentPrimary }}
+                  >
+                    Simular Hecho 🎬
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -124,6 +182,7 @@ export const SectionSolutions: React.FC<SectionSolutionsProps> = ({ themeId, col
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            {/* Medida 2.1 */}
             <div
               className="p-3.5 rounded-xl border flex flex-col justify-between"
               style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
@@ -136,43 +195,78 @@ export const SectionSolutions: React.FC<SectionSolutionsProps> = ({ themeId, col
                   Mesas de concertación mediadas por la Alcaldía Local de Usme: entrega de canastillas uniformes con recipiente de acopio propio, sustitución de icopor por empaques de papel kraft o fécula de maíz.
                 </p>
               </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Generación informal: -60% volumen
-              </span>
+              <div className="pt-3 border-t mt-3 flex items-center justify-between" style={{ borderColor: theme.borderColor }}>
+                <span className="text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
+                  -60% volumen calle
+                </span>
+                {onSimulateSolution && (
+                  <button
+                    onClick={() => onSimulateSolution('informalVendorAgreement')}
+                    className="px-2 py-1 rounded-lg text-[10.5px] font-semibold text-white transition-transform active:scale-95"
+                    style={{ backgroundColor: theme.accentPrimary }}
+                  >
+                    Simular Hecho 🎬
+                  </button>
+                )}
+              </div>
             </div>
 
+            {/* Medida 2.2 */}
             <div
               className="p-3.5 rounded-xl border flex flex-col justify-between"
               style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
             >
               <div>
                 <h4 className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
-                  Ruta Escolar de Reciclaje con ASOREC
+                  Ruta Escolar con Recicladores de Usme
                 </h4>
                 <p className="leading-relaxed" style={{ color: theme.textSecondary }}>
                   Articulación directa con la Asociación de Recicladores de Oficio de la localidad. Se establecen horarios fijos de retiro del material aprovechable (PET, cartón, plegadiza) directamente desde el colegio.
                 </p>
               </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Aprovechamiento: ~45 kg/día
-              </span>
+              <div className="pt-3 border-t mt-3 flex items-center justify-between" style={{ borderColor: theme.borderColor }}>
+                <span className="text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
+                  ~45 kg/día reciclados
+                </span>
+                {onSimulateSolution && (
+                  <button
+                    onClick={() => onSimulateSolution('ecologicalIslands')}
+                    className="px-2 py-1 rounded-lg text-[10.5px] font-semibold text-white transition-transform active:scale-95"
+                    style={{ backgroundColor: theme.accentPrimary }}
+                  >
+                    Simular Hecho 🎬
+                  </button>
+                )}
+              </div>
             </div>
 
+            {/* Medida 2.3 */}
             <div
               className="p-3.5 rounded-xl border flex flex-col justify-between"
               style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
             >
               <div>
                 <h4 className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
-                  PRAE en Metodología IAP
+                  PRAE en Metodología IAP Fals Borda
                 </h4>
                 <p className="leading-relaxed" style={{ color: theme.textSecondary }}>
                   Transformación del currículo de Ciencias Naturales y Sociales para que los estudiantes mapeen los focos de basura perimetrales y formulen murales ecológicos disuasorios en las paredes exteriores.
                 </p>
               </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Apropiación territorial activa
-              </span>
+              <div className="pt-3 border-t mt-3 flex items-center justify-between" style={{ borderColor: theme.borderColor }}>
+                <span className="text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
+                  Apropiación social activa
+                </span>
+                {onSimulateSolution && (
+                  <button
+                    onClick={() => onSimulateSolution('studentBrigade')}
+                    className="px-2 py-1 rounded-lg text-[10.5px] font-semibold text-white transition-transform active:scale-95"
+                    style={{ backgroundColor: theme.accentPrimary }}
+                  >
+                    Simular Hecho 🎬
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -189,56 +283,29 @@ export const SectionSolutions: React.FC<SectionSolutionsProps> = ({ themeId, col
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             <div
-              className="p-3.5 rounded-xl border flex flex-col justify-between"
+              className="p-3.5 rounded-xl border"
               style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
             >
-              <div>
-                <h4 className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
-                  Contenedores Soterrados Inteligentes
-                </h4>
-                <p className="leading-relaxed" style={{ color: theme.textSecondary }}>
-                  Instalación de buzones subterráneos de gran capacidad (3,000 litros) herméticos y libres de olores, equipados con sensores ultrasónicos de nivel IoT que alertan a la central del operador cuando alcanzan el 80% de volumen.
-                </p>
-              </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Eliminación de vectores y olores
-              </span>
+              <h4 className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
+                Baterías de Contenedores Soterrados Hidráulicos
+              </h4>
+              <p className="leading-relaxed" style={{ color: theme.textSecondary }}>
+                Instalación de buzones en acera con buzones subterráneos de 3 m³ accionados hidráulicamente por los camiones de aseo. Impide el acceso de perros callejeros, elimina olores y sextuplica la capacidad de almacenamiento.
+              </p>
             </div>
 
             <div
-              className="p-3.5 rounded-xl border flex flex-col justify-between"
+              className="p-3.5 rounded-xl border"
               style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
             >
-              <div>
-                <h4 className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
-                  Zona Escolar Segura y Biorretentores
-                </h4>
-                <p className="leading-relaxed" style={{ color: theme.textSecondary }}>
-                  Intervención urbanística que ensancha aceras peatonales e incorpora jardines de biorretención y mobiliario antivandálico, desincentivando el parqueo desordenado y el depósito clandestino de escombros en el perímetro.
-                </p>
-              </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Espacio público digno y caminable
-              </span>
-            </div>
-
-            <div
-              className="p-3.5 rounded-xl border flex flex-col justify-between"
-              style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
-            >
-              <div>
-                <h4 className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
-                  Certificación "Colegio Basura Cero"
-                </h4>
-                <p className="leading-relaxed" style={{ color: theme.textSecondary }}>
-                  Compostaje in situ del 100% de los residuos orgánicos de la cafetería escolar para alimentar la huerta pedagógica del colegio y reducir a menos de 10% los residuos enviados al Relleno Sanitario Doña Juana.
-                </p>
-              </div>
-              <span className="mt-3 text-[10.5px] font-mono font-semibold" style={{ color: theme.accentPrimary }}>
-                Cierre total de ciclo de nutrientes
-              </span>
+              <h4 className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
+                Zona Libre de Plásticos de Un Solo Uso
+              </h4>
+              <p className="leading-relaxed" style={{ color: theme.textSecondary }}>
+                Acuerdo con la Junta Administradora Local (JAL) de Usme para declarar un perímetro escolar de 100 metros como "Zona de Exclusión de Icopor y Empaques No Biodegradables", con subsidio distrital a vajillas retornables.
+              </p>
             </div>
           </div>
         </div>

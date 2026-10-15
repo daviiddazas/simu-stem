@@ -1,13 +1,23 @@
 /**
  * Sección 2: Modelos Matemáticos y Desarrollo Riguroso de Cálculos
  * Colegio Orlando Fals Borda IED
- * Adaptativo a Modo Claro y Modo Oscuro con alta legibilidad
+ * Renderiza todas las ecuaciones con formato matemático real LaTeX / HTML Matemático (KaTeX)
+ * sin cajas de código de programación, con alta legibilidad y estilo académico.
  */
 
 import React, { useState } from 'react';
 import { ColorMode, ThemeId } from '../types';
 import { getTheme } from '../utils/themeConfig';
-import { Calculator, FunctionSquare } from 'lucide-react';
+import { MathView, InlineMath } from './MathView';
+import {
+  Calculator,
+  FunctionSquare,
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
+  AlertTriangle,
+  Info,
+} from 'lucide-react';
 
 interface SectionMathModelProps {
   themeId: ThemeId;
@@ -19,14 +29,14 @@ export const SectionMathModel: React.FC<SectionMathModelProps> = ({ themeId, col
 
   // Calculadora interactiva paso a paso
   const [calcStudents, setCalcStudents] = useState<number>(1600);
-  const [calcGe, setCalcGe] = useState<number>(35); // g/est
+  const [calcGe, setCalcGe] = useState<number>(35); // g/estudiante
   const [calcStalls, setCalcStalls] = useState<number>(5);
   const [calcBins, setCalcBins] = useState<number>(3);
   const [calcBinVolume, setCalcBinVolume] = useState<number>(240); // L
   const [calcCulture, setCalcCulture] = useState<number>(40); // %
 
   // Cálculos dinámicos
-  const density = 0.135; // kg/L
+  const density = 0.135; // kg/L (135 kg/m³)
   const maxCapacityKg = calcBins * calcBinVolume * density; // kg totales
   const totalStudentGenKg = (calcStudents * calcGe) / 1000; // kg escolares
   const stallGenKg = calcStalls * 2.8; // kg puestos (2.8 kg/puesto promedio)
@@ -48,17 +58,17 @@ export const SectionMathModel: React.FC<SectionMathModelProps> = ({ themeId, col
             className="text-xs font-semibold tracking-wider uppercase font-mono px-2 py-0.5 rounded"
             style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
           >
-            Sección 2 · Modelación Matemática
+            Sección 2 · Modelación Matemática Rigurosa
           </span>
           <span className="text-xs" style={{ color: theme.textSecondary }}>
-            Sistemas Dinámicos y Ecuaciones Diferenciales Ordinarias (EDO)
+            Balance de Masa Continuo y Ecuaciones Diferenciales Ordinarias (EDO)
           </span>
         </div>
         <h2 className="text-xl md:text-2xl font-bold tracking-tight" style={{ color: theme.textPrimary }}>
           Formulación Matemática del Balance de Masa y Dinámica de Acumulación
         </h2>
         <p className="mt-2 text-sm leading-relaxed" style={{ color: theme.textSecondary }}>
-          Para cuantificar el comportamiento temporal de los residuos en el entorno del Colegio Orlando Fals Borda, se plantea un sistema de balance de masa continuo gobernado por ecuaciones diferenciales acopladas con términos de flujo peatonal no estacionario, tasas de generación per cápita y capacidades límites de retención física.
+          Para cuantificar el comportamiento temporal de los residuos en el entorno del Colegio Orlando Fals Borda, planteamos un sistema de balance de masa dinámico gobernado por ecuaciones diferenciales acopladas con flujos peatonales bimodales, tasas de generación per cápita y umbrales de saturación física.
         </p>
       </div>
 
@@ -67,83 +77,171 @@ export const SectionMathModel: React.FC<SectionMathModelProps> = ({ themeId, col
         className="p-6 rounded-2xl border transition-colors space-y-4 shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
       >
-        <div className="flex items-center gap-2">
-          <FunctionSquare className="w-5 h-5" style={{ color: theme.accentPrimary }} />
-          <h3 className="font-semibold text-base" style={{ color: theme.textPrimary }}>
-            1. Ecuación Diferencial de Saturación del Contenedor dS/dt
-          </h3>
-        </div>
-
-        <div
-          className="p-4 rounded-xl border font-mono text-xs md:text-sm overflow-x-auto text-center font-bold"
-          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor, color: theme.textPrimary }}
-        >
-          dS(t) / dt = R_in(t) · α(S) - R_out(t)
-        </div>
-
-        <div className="text-xs space-y-2 leading-relaxed" style={{ color: theme.textSecondary }}>
-          <p>
-            <strong className="font-mono" style={{ color: theme.textPrimary }}>S(t) [kg]:</strong> Masa instantánea de residuos confinados dentro de los contenedores a la hora t ∈ [6, 18].
-          </p>
-          <p>
-            <strong className="font-mono" style={{ color: theme.textPrimary }}>R_in(t) [kg/h]:</strong> Tasa neta de generación que arriba a las inmediaciones del colegio.
-          </p>
-          <p>
-            <strong className="font-mono" style={{ color: theme.textPrimary }}>α(S) [adimensional]:</strong> Función no lineal de eficiencia de captura del contenedor. A medida que el contenedor se llena, la probabilidad de que el usuario logre introducir el residuo decrece:
-          </p>
-          <div
-            className="p-3 rounded-lg border font-mono text-xs my-2 leading-relaxed"
-            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor, color: theme.textPrimary }}
-          >
-            α(S) = 0.95 si S(t) &lt; 0.75 · C_max<br />
-            α(S) = 0.95 · [1 - (S(t) - 0.75 C_max) / (0.25 C_max)] si 0.75 C_max ≤ S(t) &lt; C_max<br />
-            α(S) = 0 si S(t) ≥ C_max
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FunctionSquare className="w-5 h-5" style={{ color: theme.accentPrimary }} />
+            <h3 className="font-semibold text-base" style={{ color: theme.textPrimary }}>
+              1. Ecuación Diferencial de Saturación del Contenedor
+            </h3>
           </div>
-          <p>
-            <strong className="font-mono" style={{ color: theme.textPrimary }}>R_out(t) [kg/h]:</strong> Función de extracción y vaciado efectuada por el servicio de aseo municipal (modelada como pulso compacto en t = t_rec).
-          </p>
+          <span
+            className="text-[11px] font-medium px-2 py-0.5 rounded border"
+            style={{
+              backgroundColor: theme.bgPanel,
+              borderColor: theme.borderColor,
+              color: theme.accentPrimary,
+            }}
+          >
+            Formato Matemático LaTeX
+          </span>
+        </div>
+
+        {/* Ecuación Principal en LaTeX */}
+        <div
+          className="p-5 rounded-xl border flex flex-col items-center justify-center shadow-xs transition-colors"
+          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+        >
+          <MathView
+            latex="\frac{dS(t)}{dt} = R_{\text{in}}(t) \cdot \alpha(S) - R_{\text{out}}(t)"
+            displayMode={true}
+            style={{ color: theme.textPrimary }}
+          />
+        </div>
+
+        {/* Desglose de Variables */}
+        <div className="text-xs space-y-2.5 leading-relaxed" style={{ color: theme.textSecondary }}>
+          <div className="flex items-start gap-2">
+            <span className="shrink-0 mt-0.5 font-bold" style={{ color: theme.textPrimary }}>•</span>
+            <div>
+              <InlineMath latex="S(t) \in [0, C_{\max}]" /> <span className="font-semibold" style={{ color: theme.textPrimary }}>[kg]:</span> Masa instantánea de residuos confinados en los contenedores escolares a la hora <InlineMath latex="t \in [6, 18]" />.
+            </div>
+          </div>
+
+          <div className="flex items-start gap-2">
+            <span className="shrink-0 mt-0.5 font-bold" style={{ color: theme.textPrimary }}>•</span>
+            <div>
+              <InlineMath latex="R_{\text{in}}(t)" /> <span className="font-semibold" style={{ color: theme.textPrimary }}>[kg/h]:</span> Tasa neta de residuos que ingresa desde el flujo peatonal escolar y puestos informales.
+            </div>
+          </div>
+
+          <div className="flex items-start gap-2">
+            <span className="shrink-0 mt-0.5 font-bold" style={{ color: theme.textPrimary }}>•</span>
+            <div>
+              <InlineMath latex="\alpha(S)" /> <span className="font-semibold" style={{ color: theme.textPrimary }}>[adimensional]:</span> Eficiencia no lineal de captura. A medida que el contenedor se llena por encima del 75%, disminuye la probabilidad de que el usuario logre depositar el residuo dentro de la cesta:
+            </div>
+          </div>
+
+          {/* Ecuación por partes en LaTeX */}
+          <div
+            className="p-4 rounded-xl border flex flex-col items-center justify-center my-2 shadow-xs transition-colors"
+            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+          >
+            <MathView
+              latex="\alpha(S) = \begin{cases} 0.95, & \text{si } S(t) < 0.75 \cdot C_{\max} \\[8pt] 0.95 \cdot \left(1 - \dfrac{S(t) - 0.75 \cdot C_{\max}}{0.25 \cdot C_{\max}}\right), & \text{si } 0.75 \cdot C_{\max} \le S(t) < C_{\max} \\[8pt] 0, & \text{si } S(t) \ge C_{\max} \end{cases}"
+              displayMode={true}
+              style={{ color: theme.textPrimary }}
+            />
+          </div>
+
+          <div className="flex items-start gap-2">
+            <span className="shrink-0 mt-0.5 font-bold" style={{ color: theme.textPrimary }}>•</span>
+            <div>
+              <InlineMath latex="R_{\text{out}}(t)" /> <span className="font-semibold" style={{ color: theme.textPrimary }}>[kg/h]:</span> Función impulsiva de extracción del camión de aseo en la hora <InlineMath latex="t_{\text{rec}}" />: <InlineMath latex="R_{\text{out}}(t) = S(t) \cdot \delta(t - t_{\text{rec}})" />.
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Modelo 2: Tasa de Ingreso y Flujo Peatonal */}
+      {/* Modelo 2: Tasa de Ingreso y Flujo Peatonal Escolar */}
       <div
         className="p-6 rounded-2xl border transition-colors space-y-4 shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
       >
-        <div className="flex items-center gap-2">
-          <FunctionSquare className="w-5 h-5" style={{ color: theme.accentPrimary }} />
-          <h3 className="font-semibold text-base" style={{ color: theme.textPrimary }}>
-            2. Modelación de Flujos Peatonales y Comercio Informal
-          </h3>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FunctionSquare className="w-5 h-5" style={{ color: theme.accentPrimary }} />
+            <h3 className="font-semibold text-base" style={{ color: theme.textPrimary }}>
+              2. Modelo de Tasa de Ingreso y Flujo Peatonal Escolar
+            </h3>
+          </div>
+          <span
+            className="text-[11px] font-medium px-2 py-0.5 rounded border"
+            style={{
+              backgroundColor: theme.bgPanel,
+              borderColor: theme.borderColor,
+              color: theme.accentPrimary,
+            }}
+          >
+            Gaussiana Multimodal
+          </span>
         </div>
 
         <p className="text-xs leading-relaxed" style={{ color: theme.textSecondary }}>
-          La tasa de ingreso R_in(t) combina el flujo peatonal escolar Φ(t) y la actividad comercial de los puestos ambulantes Q_inf(t):
+          La tasa de ingreso combina la masa aportada por el flujo de estudiantes <InlineMath latex="\Phi(t)" /> con la generación concentrada de los vendedores ambulantes colindantes:
         </p>
 
+        {/* Ecuación de Tasa en LaTeX */}
         <div
-          className="p-4 rounded-xl border font-mono text-xs md:text-sm overflow-x-auto text-center font-bold"
-          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor, color: theme.textPrimary }}
+          className="p-5 rounded-xl border flex flex-col items-center justify-center shadow-xs transition-colors"
+          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
         >
-          R_in(t) = [ Φ(t) · g_e · (1 - η_cult · β_desv) ] + ∑ [ q_stall,i · w(t) ]
+          <MathView
+            latex="R_{\text{in}}(t) = \left[ \Phi(t) \cdot g_e \cdot \big(1 - \eta_{\text{cult}} \cdot \beta_{\text{desv}}\big) \right] + \sum_{i=1}^{m} \Big[ q_{\text{puesto}, i} \cdot w_i(t) \Big]"
+            displayMode={true}
+            style={{ color: theme.textPrimary }}
+          />
         </div>
 
-        <div className="text-xs space-y-2 leading-relaxed" style={{ color: theme.textSecondary }}>
-          <p>
-            <strong className="font-mono" style={{ color: theme.textPrimary }}>Φ(t) [peatones/h]:</strong> Flujo bimodal modelado mediante una mezcla de gaussianas centradas en las horas punta del colegio:
-          </p>
-          <div
-            className="p-3 rounded-lg border font-mono text-xs my-2 leading-relaxed"
-            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor, color: theme.textPrimary }}
-          >
-            Φ(t) = A₁·exp(-(t - 6.75)² / (2σ₁²)) + A₂·exp(-(t - 12.35)² / (2σ₂²)) + A₃·exp(-(t - 17.50)² / (2σ₃²)) + Φ₀
+        <div className="text-xs space-y-2.5 leading-relaxed" style={{ color: theme.textSecondary }}>
+          <div className="flex items-start gap-2">
+            <span className="shrink-0 mt-0.5 font-bold" style={{ color: theme.textPrimary }}>•</span>
+            <div>
+              <InlineMath latex="\Phi(t)" /> <span className="font-semibold" style={{ color: theme.textPrimary }}>[peatones/hora]:</span> Función de flujo modelada mediante superposición de campanas de Gauss en los horarios de timbres del Colegio Orlando Fals Borda:
+            </div>
           </div>
-          <p>
-            <strong className="font-mono" style={{ color: theme.textPrimary }}>g_e [kg/persona-h]:</strong> Tasa de descarte unitaria por estudiante en tránsito (≈ 0.035 kg/estudiante-jornada).
-          </p>
-          <p>
-            <strong className="font-mono" style={{ color: theme.textPrimary }}>η_cult [0 a 1]:</strong> Índice de cultura ciudadana y aprovechamiento en origen impulsado por el PRAE escolar.
-          </p>
+
+          <div
+            className="p-4 rounded-xl border flex flex-col items-center justify-center my-2 shadow-xs transition-colors"
+            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+          >
+            <MathView
+              latex="\Phi(t) = A_1 \exp\!\left(-\frac{(t - 6.75)^2}{2\sigma_1^2}\right) + A_2 \exp\!\left(-\frac{(t - 12.35)^2}{2\sigma_2^2}\right) + A_3 \exp\!\left(-\frac{(t - 17.50)^2}{2\sigma_3^2}\right) + \Phi_0"
+              displayMode={true}
+              style={{ color: theme.textPrimary }}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+            <div
+              className="p-2.5 rounded-lg border text-[11px]"
+              style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+            >
+              <div className="font-bold" style={{ color: theme.textPrimary }}>
+                Pico Mañana (<InlineMath latex="t_1 = 6:45" /> AM):
+              </div>
+              <div>Ingreso masivo de 950 estudiantes, refrigerios y bebidas.</div>
+            </div>
+
+            <div
+              className="p-2.5 rounded-lg border text-[11px]"
+              style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+            >
+              <div className="font-bold" style={{ color: theme.textPrimary }}>
+                Cambio de Jornada (<InlineMath latex="t_2 = 12:21" /> PM):
+              </div>
+              <div>Cruce de salida y entrada: 1100 estudiantes y ventas callejeras.</div>
+            </div>
+
+            <div
+              className="p-2.5 rounded-lg border text-[11px]"
+              style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+            >
+              <div className="font-bold" style={{ color: theme.textPrimary }}>
+                Pico Tarde (<InlineMath latex="t_3 = 5:30" /> PM):
+              </div>
+              <div>Salida de jornada tarde: 750 estudiantes.</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -152,203 +250,428 @@ export const SectionMathModel: React.FC<SectionMathModelProps> = ({ themeId, col
         className="p-6 rounded-2xl border transition-colors space-y-4 shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
       >
-        <div className="flex items-center gap-2">
-          <FunctionSquare className="w-5 h-5" style={{ color: theme.accentPrimary }} />
-          <h3 className="font-semibold text-base" style={{ color: theme.textPrimary }}>
-            3. Ecuación de Acumulación en Suelo (Focos de Contaminación)
-          </h3>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FunctionSquare className="w-5 h-5" style={{ color: theme.accentPrimary }} />
+            <h3 className="font-semibold text-base" style={{ color: theme.textPrimary }}>
+              3. Ecuación de Acumulación en Suelo (Basurales y Focos Críticos)
+            </h3>
+          </div>
+          <span
+            className="text-[11px] font-medium px-2 py-0.5 rounded border"
+            style={{
+              backgroundColor: theme.bgPanel,
+              borderColor: theme.borderColor,
+              color: theme.accentPrimary,
+            }}
+          >
+            Focos Infecciosos
+          </span>
         </div>
 
+        {/* Ecuación de Desborde en LaTeX */}
         <div
-          className="p-4 rounded-xl border font-mono text-xs md:text-sm overflow-x-auto text-center font-bold"
-          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor, color: theme.textPrimary }}
+          className="p-5 rounded-xl border flex flex-col items-center justify-center shadow-xs transition-colors"
+          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
         >
-          dV_suelo(t) / dt = R_in(t) · [1 - α(S)] + k_disp · S(t) · I(S ≥ C_max) - B_limpieza(t)
+          <MathView
+            latex="\frac{dV_{\text{suelo}}(t)}{dt} = R_{\text{in}}(t) \cdot \big[1 - \alpha(S)\big] + k_{\text{disp}} \cdot S(t) \cdot \mathbb{I}\big(S \ge C_{\max}\big) - B_{\text{limpieza}}(t)"
+            displayMode={true}
+            style={{ color: theme.textPrimary }}
+          />
         </div>
 
-        <p className="text-xs leading-relaxed" style={{ color: theme.textSecondary }}>
-          Una vez el contenedor alcanza el umbral de capacidad C_max, todo residuo adicional (1 - α(S) = 1) se deposita directamente sobre la acera. Adicionalmente, el término k_disp · S(t) cuantifica la dispersión provocada por vientos y perros callejeros que extraen bolsas de la boca del contenedor.
-        </p>
+        <div className="text-xs space-y-2 leading-relaxed" style={{ color: theme.textSecondary }}>
+          <p>
+            Cuando el contenedor supera su volumen nominal (<InlineMath latex="S \ge C_{\max}" />), el término <InlineMath latex="1 - \alpha(S) = 1" /> hace que todo el flujo entrante se precipite al suelo.
+          </p>
+          <p>
+            El factor <InlineMath latex="k_{\text{disp}} \cdot S(t)" /> modela la dispersión mecánica por vientos de Usme y fauna feral (perros callejeros) que rasgan bolsas desbordadas, dispersando microplásticos en un radio de hasta 35 metros alrededor de la reja escolar.
+          </p>
+        </div>
       </div>
 
-      {/* Calculadora Paramétrica Interactiva */}
+      {/* Modelo 4: Tiempo Crítico de Saturación */}
       <div
         className="p-6 rounded-2xl border transition-colors space-y-4 shadow-sm"
         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Calculator className="w-5 h-5" style={{ color: theme.accentPrimary }} />
-            <h3 className="font-semibold text-sm" style={{ color: theme.textPrimary }}>
-              Calculadora Analítica del Colegio Fals Borda (Demostración Paso a Paso)
+            <FunctionSquare className="w-5 h-5" style={{ color: theme.accentPrimary }} />
+            <h3 className="font-semibold text-base" style={{ color: theme.textPrimary }}>
+              4. Determinación Analítica del Momento Crítico de Colapso (<InlineMath latex="t^*" />)
             </h3>
           </div>
-          <span className="text-xs font-mono font-medium" style={{ color: theme.accentPrimary }}>
-            Valores de Campo en Bogotá
+        </div>
+
+        <div
+          className="p-5 rounded-xl border flex flex-col items-center justify-center shadow-xs transition-colors"
+          style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+        >
+          <MathView
+            latex="t^* = \inf \left\{ t \in [t_0, t_{\text{fin}}] \;:\; \int_{t_0}^{t} \Big[ R_{\text{in}}(\tau) \cdot \alpha(S(\tau)) - R_{\text{out}}(\tau) \Big] d\tau \;\ge\; C_{\max} \right\}"
+            displayMode={true}
+            style={{ color: theme.textPrimary }}
+          />
+        </div>
+
+        <p className="text-xs leading-relaxed" style={{ color: theme.textSecondary }}>
+          En condiciones no intervenidas en el Colegio Orlando Fals Borda, la integral acumulada alcanza <InlineMath latex="C_{\max}" /> a las <strong style={{ color: theme.textPrimary }}>11:45 AM</strong>, justo antes del timbre de almuerzo y salida de la jornada mañana, provocando que el 100% de los residuos del cambio de jornada caigan directamente al andén.
+        </p>
+      </div>
+
+      {/* Calculadora Paramétrica Interactiva con Demostración en LaTeX */}
+      <div
+        className="p-6 rounded-2xl border transition-colors space-y-5 shadow-sm"
+        style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Calculator className="w-5 h-5" style={{ color: theme.accentPrimary }} />
+            <h3 className="font-semibold text-base" style={{ color: theme.textPrimary }}>
+              Calculadora Analítica Paso a Paso con Ecuaciones Resueltas
+            </h3>
+          </div>
+          <span
+            className="text-xs font-medium px-2.5 py-1 rounded-lg border w-fit"
+            style={{
+              backgroundColor: theme.bgPanel,
+              borderColor: theme.borderColor,
+              color: theme.accentPrimary,
+            }}
+          >
+            Modifica valores para resolver en vivo
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-          <div>
-            <label className="block mb-1 font-medium" style={{ color: theme.textSecondary }}>
-              Estudiantes (N):
+        {/* Inputs numéricos con estilo limpio */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-xs">
+          <div
+            className="p-3 rounded-xl border"
+            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+          >
+            <label className="block mb-1 font-semibold" style={{ color: theme.textPrimary }}>
+              Población Estudiantes (<InlineMath latex="N" />):
             </label>
             <input
               type="number"
+              min="200"
+              max="3500"
+              step="50"
               value={calcStudents}
               onChange={(e) => setCalcStudents(Number(e.target.value))}
-              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs"
+              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs font-bold"
               style={{
                 borderColor: theme.borderColor,
-                backgroundColor: theme.bgPanel,
+                backgroundColor: theme.bgSurface,
                 color: theme.textPrimary,
               }}
             />
+            <span className="text-[10.5px] opacity-75 mt-1 block" style={{ color: theme.textSecondary }}>
+              Alumnos en ambas jornadas
+            </span>
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium" style={{ color: theme.textSecondary }}>
-              Generación per cápita (g_e g):
+          <div
+            className="p-3 rounded-xl border"
+            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+          >
+            <label className="block mb-1 font-semibold" style={{ color: theme.textPrimary }}>
+              Generación unitaria (<InlineMath latex="g_e" /> en gramos):
             </label>
             <input
               type="number"
+              min="10"
+              max="90"
+              step="5"
               value={calcGe}
               onChange={(e) => setCalcGe(Number(e.target.value))}
-              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs"
+              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs font-bold"
               style={{
                 borderColor: theme.borderColor,
-                backgroundColor: theme.bgPanel,
+                backgroundColor: theme.bgSurface,
                 color: theme.textPrimary,
               }}
             />
+            <span className="text-[10.5px] opacity-75 mt-1 block" style={{ color: theme.textSecondary }}>
+              g / estudiante / jornada escolar
+            </span>
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium" style={{ color: theme.textSecondary }}>
-              Puestos informales (P):
+          <div
+            className="p-3 rounded-xl border"
+            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+          >
+            <label className="block mb-1 font-semibold" style={{ color: theme.textPrimary }}>
+              Puestos de comercio (<InlineMath latex="P" />):
             </label>
             <input
               type="number"
+              min="0"
+              max="15"
+              step="1"
               value={calcStalls}
               onChange={(e) => setCalcStalls(Number(e.target.value))}
-              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs"
+              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs font-bold"
               style={{
                 borderColor: theme.borderColor,
-                backgroundColor: theme.bgPanel,
+                backgroundColor: theme.bgSurface,
                 color: theme.textPrimary,
               }}
             />
+            <span className="text-[10.5px] opacity-75 mt-1 block" style={{ color: theme.textSecondary }}>
+              Vendedores informales en puerta
+            </span>
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium" style={{ color: theme.textSecondary }}>
-              Contenedores (N_c):
+          <div
+            className="p-3 rounded-xl border"
+            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+          >
+            <label className="block mb-1 font-semibold" style={{ color: theme.textPrimary }}>
+              Contenedores instalados (<InlineMath latex="N_c" />):
             </label>
             <input
               type="number"
+              min="1"
+              max="10"
+              step="1"
               value={calcBins}
               onChange={(e) => setCalcBins(Number(e.target.value))}
-              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs"
+              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs font-bold"
               style={{
                 borderColor: theme.borderColor,
-                backgroundColor: theme.bgPanel,
+                backgroundColor: theme.bgSurface,
                 color: theme.textPrimary,
               }}
             />
+            <span className="text-[10.5px] opacity-75 mt-1 block" style={{ color: theme.textSecondary }}>
+              Canastillas o módulos triples
+            </span>
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium" style={{ color: theme.textSecondary }}>
-              Capacidad unitaria (L):
+          <div
+            className="p-3 rounded-xl border"
+            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+          >
+            <label className="block mb-1 font-semibold" style={{ color: theme.textPrimary }}>
+              Capacidad unitaria (<InlineMath latex="V_c" /> en Litros):
             </label>
             <input
               type="number"
+              min="50"
+              max="1100"
+              step="20"
               value={calcBinVolume}
               onChange={(e) => setCalcBinVolume(Number(e.target.value))}
-              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs"
+              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs font-bold"
               style={{
                 borderColor: theme.borderColor,
-                backgroundColor: theme.bgPanel,
+                backgroundColor: theme.bgSurface,
                 color: theme.textPrimary,
               }}
             />
+            <span className="text-[10.5px] opacity-75 mt-1 block" style={{ color: theme.textSecondary }}>
+              Litros por canasta (estándar: 240L)
+            </span>
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium" style={{ color: theme.textSecondary }}>
-              Cultura / Separación (%):
+          <div
+            className="p-3 rounded-xl border"
+            style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
+          >
+            <label className="block mb-1 font-semibold" style={{ color: theme.textPrimary }}>
+              Cultura / Separación PRAE (<InlineMath latex="\eta" /> %):
             </label>
             <input
               type="number"
+              min="0"
+              max="100"
+              step="5"
               value={calcCulture}
               onChange={(e) => setCalcCulture(Number(e.target.value))}
-              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs"
+              className="w-full px-2.5 py-1.5 rounded-lg border font-mono text-xs font-bold"
               style={{
                 borderColor: theme.borderColor,
-                backgroundColor: theme.bgPanel,
+                backgroundColor: theme.bgSurface,
                 color: theme.textPrimary,
               }}
             />
+            <span className="text-[10.5px] opacity-75 mt-1 block" style={{ color: theme.textSecondary }}>
+              % desvío a recicladores de Usme
+            </span>
           </div>
         </div>
 
-        {/* Resultados del Cálculo */}
+        {/* Ecuaciones Resueltas Paso a Paso en Formato LaTeX */}
         <div
-          className="p-4 rounded-xl border grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs"
+          className="p-5 rounded-xl border space-y-4"
           style={{ backgroundColor: theme.bgPanel, borderColor: theme.borderColor }}
         >
-          <div>
-            <span className="text-[11px] opacity-75" style={{ color: theme.textSecondary }}>
-              Capacidad Total (C_max):
-            </span>
-            <p className="text-base font-bold font-mono mt-0.5" style={{ color: theme.textPrimary }}>
-              {maxCapacityKg.toFixed(1)} kg
-            </p>
-            <span className="text-[10px] opacity-70" style={{ color: theme.textSecondary }}>
-              ({calcBins * calcBinVolume} Litros)
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4" style={{ color: theme.accentPrimary }} />
+            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: theme.textPrimary }}>
+              Demostración Matemática Resuelta con tus Valores
             </span>
           </div>
 
-          <div>
-            <span className="text-[11px] opacity-75" style={{ color: theme.textSecondary }}>
-              Generación Bruta Diaria:
-            </span>
-            <p className="text-base font-bold font-mono mt-0.5" style={{ color: theme.textPrimary }}>
-              {grossGenKg.toFixed(1)} kg
-            </p>
-            <span className="text-[10px] opacity-70" style={{ color: theme.textSecondary }}>
-              Estudiantes + Puestos
-            </span>
-          </div>
-
-          <div>
-            <span className="text-[11px] opacity-75" style={{ color: theme.textSecondary }}>
-              Saturación del Sistema:
-            </span>
-            <p
-              className="text-base font-bold font-mono mt-0.5"
-              style={{ color: saturationPct >= 95 ? '#D27979' : theme.accentPrimary }}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            {/* Paso 1: Capacidad Máxima */}
+            <div
+              className="p-3.5 rounded-lg border"
+              style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
             >
-              {saturationPct.toFixed(1)}%
-            </p>
-            <span className="text-[10px] opacity-70" style={{ color: theme.textSecondary }}>
-              {saturationPct >= 100 ? 'Colapso físico' : 'Capacidad suficiente'}
-            </span>
+              <div className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
+                Paso 1: Capacidad Máxima de Retención (<InlineMath latex="C_{\max}" />)
+              </div>
+              <MathView
+                latex={`C_{\\max} = N_c \\times V_c \\times \\rho = ${calcBins} \\times ${calcBinVolume}\\,\\text{L} \\times 0.135\\,\\frac{\\text{kg}}{\\text{L}} = ${maxCapacityKg.toFixed(1)}\\,\\text{kg}`}
+                displayMode={true}
+                style={{ color: theme.textPrimary }}
+              />
+            </div>
+
+            {/* Paso 2: Generación Bruta */}
+            <div
+              className="p-3.5 rounded-lg border"
+              style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
+            >
+              <div className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
+                Paso 2: Generación Bruta Diaria (<InlineMath latex="M_{\text{bruta}}" />)
+              </div>
+              <MathView
+                latex={`M_{\\text{bruta}} = \\frac{${calcStudents} \\times ${calcGe}\\,\\text{g}}{1000} + (${calcStalls} \\times 2.8\\,\\text{kg}) = ${grossGenKg.toFixed(1)}\\,\\text{kg}`}
+                displayMode={true}
+                style={{ color: theme.textPrimary }}
+              />
+            </div>
+
+            {/* Paso 3: Desvío por Reciclaje */}
+            <div
+              className="p-3.5 rounded-lg border"
+              style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
+            >
+              <div className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
+                Paso 3: Desvío por Separación en Fuente (<InlineMath latex="M_{\text{desv}}" />)
+              </div>
+              <MathView
+                latex={`M_{\\text{desv}} = ${grossGenKg.toFixed(1)}\\,\\text{kg} \\times \\left(\\frac{${calcCulture}}{100}\\right) \\times 0.45 = ${diversionKg.toFixed(1)}\\,\\text{kg}`}
+                displayMode={true}
+                style={{ color: theme.textPrimary }}
+              />
+            </div>
+
+            {/* Paso 4: Balance Neto al Contenedor */}
+            <div
+              className="p-3.5 rounded-lg border"
+              style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
+            >
+              <div className="font-semibold mb-1" style={{ color: theme.textPrimary }}>
+                Paso 4: Masa Neta y Desborde (<InlineMath latex="V_{\\text{suelo}}" />)
+              </div>
+              <MathView
+                latex={`M_{\\text{neta}} = ${netGenKg.toFixed(1)}\\,\\text{kg} \\quad\\longrightarrow\\quad V_{\\text{suelo}} = \\max(0, ${netGenKg.toFixed(1)} - ${maxCapacityKg.toFixed(1)}) = ${overflowKg.toFixed(1)}\\,\\text{kg}`}
+                displayMode={true}
+                style={{ color: theme.textPrimary }}
+              />
+            </div>
           </div>
 
-          <div>
-            <span className="text-[11px] opacity-75" style={{ color: theme.textSecondary }}>
-              Residuos en Suelo (Excedente):
-            </span>
-            <p
-              className="text-base font-bold font-mono mt-0.5"
-              style={{ color: overflowKg > 0 ? '#D27979' : theme.accentPrimary }}
+          {/* Tarjetas de Diagnóstico Sintético */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div
+              className="p-3 rounded-lg border text-center"
+              style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
             >
-              {overflowKg.toFixed(1)} kg
-            </p>
-            <span className="text-[10px] opacity-70" style={{ color: theme.textSecondary }}>
-              Arrojo en acera
-            </span>
+              <span className="text-[11px] opacity-75 block" style={{ color: theme.textSecondary }}>
+                Capacidad Límite
+              </span>
+              <span className="text-lg font-bold font-mono" style={{ color: theme.textPrimary }}>
+                {maxCapacityKg.toFixed(1)} kg
+              </span>
+            </div>
+
+            <div
+              className="p-3 rounded-lg border text-center"
+              style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
+            >
+              <span className="text-[11px] opacity-75 block" style={{ color: theme.textSecondary }}>
+                Carga Diaria Neta
+              </span>
+              <span className="text-lg font-bold font-mono" style={{ color: theme.textPrimary }}>
+                {netGenKg.toFixed(1)} kg
+              </span>
+            </div>
+
+            <div
+              className="p-3 rounded-lg border text-center"
+              style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
+            >
+              <span className="text-[11px] opacity-75 block" style={{ color: theme.textSecondary }}>
+                Saturación
+              </span>
+              <span
+                className="text-lg font-bold font-mono"
+                style={{ color: saturationPct >= 95 ? '#D27979' : theme.accentPrimary }}
+              >
+                {saturationPct.toFixed(1)}%
+              </span>
+            </div>
+
+            <div
+              className="p-3 rounded-lg border text-center"
+              style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderColor }}
+            >
+              <span className="text-[11px] opacity-75 block" style={{ color: theme.textSecondary }}>
+                Basura en Suelo
+              </span>
+              <span
+                className="text-lg font-bold font-mono"
+                style={{ color: overflowKg > 0 ? '#D27979' : theme.accentPrimary }}
+              >
+                {overflowKg.toFixed(1)} kg
+              </span>
+            </div>
+          </div>
+
+          {/* Veredicto Físico */}
+          <div
+            className={`p-3 rounded-xl border flex items-center gap-3 text-xs ${
+              overflowKg > 0 ? 'border-red-300' : 'border-emerald-300'
+            }`}
+            style={{
+              backgroundColor:
+                overflowKg > 0
+                  ? colorMode === 'oscuro'
+                    ? 'rgba(120, 40, 40, 0.25)'
+                    : 'rgba(254, 242, 242, 0.9)'
+                  : colorMode === 'oscuro'
+                  ? 'rgba(40, 90, 60, 0.25)'
+                  : 'rgba(240, 253, 244, 0.9)',
+            }}
+          >
+            {overflowKg > 0 ? (
+              <>
+                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
+                <div>
+                  <strong className="text-red-600 dark:text-red-400">
+                    Colapso por saturación física:
+                  </strong>{' '}
+                  Con estos parámetros, los contenedores colapsan y quedan {overflowKg.toFixed(1)} kg de residuos tirados en la acera del colegio, atrayendo plagas y focos de contaminación.
+                </div>
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                <div>
+                  <strong className="text-emerald-600 dark:text-emerald-400">
+                    Sistema en equilibrio sostenible:
+                  </strong>{' '}
+                  La combinación de separación en la fuente ({calcCulture}%) y capacidad de almacenamiento ({maxCapacityKg.toFixed(1)} kg) es suficiente para retener el 100% de los residuos generados sin desborde en el andén.
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

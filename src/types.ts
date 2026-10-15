@@ -9,6 +9,13 @@ export type ThemeId = 'dia' | 'termico' | 'ecologico';
 
 export type ColorMode = 'claro' | 'oscuro';
 
+export type SolutionEventId =
+  | 'synchronizedCollection'
+  | 'ecologicalIslands'
+  | 'informalVendorAgreement'
+  | 'studentBrigade'
+  | 'allSolutions';
+
 export interface EnvironmentConfig {
   id: EnvironmentId;
   name: string;

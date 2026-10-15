@@ -5,23 +5,21 @@
  */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ColorMode, EnvironmentId, SimulationParams, ThemeId } from './types';
+import { ColorMode, EnvironmentId, SimulationParams, ThemeId, SolutionEventId } from './types';
 import { ENVIRONMENTS_DATA, runSimulationTimeline } from './utils/mathModel';
 import { getTheme } from './utils/themeConfig';
+import { soundManager } from './utils/audioEffects';
 import { SimulationCanvas } from './components/SimulationCanvas';
 import { SimulationCharts } from './components/SimulationCharts';
 import { ControlDeck } from './components/ControlDeck';
 import { SectionDiagnosis } from './components/SectionDiagnosis';
 import { SectionMathModel } from './components/SectionMathModel';
 import { SectionSolutions } from './components/SectionSolutions';
-import { SectionSourceCode } from './components/SectionSourceCode';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Sparkles, Activity, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function App() {
-  // Estado de navegación
-  const [activeTab, setActiveTab] = useState<
-    'simulador' | 'diagnostico' | 'matematicas' | 'soluciones' | 'codigo'
-  >('simulador');
+  // Estado de navegación (4 pestañas: Simulador, Diagnóstico, Matemáticas, Soluciones)
+  const [activeTab, setActiveTab] = useState<'simulador' | 'diagnostico' | 'matematicas' | 'soluciones'>('simulador');
 
   // Estado del modelo y simulación
   const [environmentId, setEnvironmentId] = useState<EnvironmentId>('entrada');
@@ -30,8 +28,9 @@ export default function App() {
   const [currentHour, setCurrentHour] = useState<number>(6.0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
+  const [activeSolutionSim, setActiveSolutionSim] = useState<SolutionEventId | null>(null);
 
-  // Parámetros de simulación
+  // Parámetros de simulación editables por el estudiante
   const [params, setParams] = useState<SimulationParams>({
     studentCount: 1600,
     generationRatePerStudent: 32, // g/estudiante
@@ -119,6 +118,16 @@ export default function App() {
     }));
   };
 
+  // Disparador de simulación de solución en vivo
+  const handleTriggerSolutionSim = (solutionId: SolutionEventId) => {
+    setActiveSolutionSim(solutionId);
+    setActiveTab('simulador');
+  };
+
+  // Resumen del estado actual del contenedor
+  const isOverflowing = currentStep.overflowGroundKg > 0.05;
+  const isHighSaturation = currentStep.binSaturationPct >= 80;
+
   return (
     <div
       className="min-h-screen transition-colors duration-300 font-sans flex flex-col"
@@ -129,7 +138,7 @@ export default function App() {
         className="w-full px-6 py-3.5 border-b flex items-center justify-between gap-8 transition-colors shrink-0 sticky top-0 z-30 backdrop-blur-md shadow-xs"
         style={{
           borderColor: theme.borderColor,
-          backgroundColor: colorMode === 'oscuro' ? 'rgba(30, 38, 33, 0.92)' : 'rgba(255, 255, 255, 0.92)',
+          backgroundColor: colorMode === 'oscuro' ? 'rgba(30, 38, 33, 0.94)' : 'rgba(255, 255, 255, 0.94)',
         }}
       >
         {/* Zona 1: Título de Marca llamativo */}
@@ -146,7 +155,7 @@ export default function App() {
           <span>EcoLab Fals Borda · Misión Territorio Limpio</span>
         </a>
 
-        {/* Zona 2: 4-5 enlaces de navegación de una línea */}
+        {/* Zona 2: 4 enlaces de navegación de una línea (Pestaña de código eliminada) */}
         <nav className="hidden md:flex items-center gap-6 text-xs font-medium" style={{ color: theme.textSecondary }}>
           <button
             onClick={() => setActiveTab('simulador')}
@@ -197,20 +206,7 @@ export default function App() {
               color: activeTab === 'soluciones' ? theme.textPrimary : theme.textSecondary,
             }}
           >
-            3. Soluciones
-          </button>
-
-          <button
-            onClick={() => setActiveTab('codigo')}
-            className={`whitespace-nowrap transition-colors py-1 ${
-              activeTab === 'codigo' ? 'font-bold border-b-2' : 'hover:opacity-100 opacity-80'
-            }`}
-            style={{
-              borderColor: activeTab === 'codigo' ? theme.accentPrimary : 'transparent',
-              color: activeTab === 'codigo' ? theme.textPrimary : theme.textSecondary,
-            }}
-          >
-            4. Código Prototipo
+            3. Soluciones Estratégicas
           </button>
         </nav>
 
@@ -295,18 +291,6 @@ export default function App() {
           >
             Soluciones
           </button>
-          <button
-            onClick={() => setActiveTab('codigo')}
-            className={`px-2.5 py-1 rounded-lg whitespace-nowrap text-xs ${
-              activeTab === 'codigo' ? 'font-bold shadow-xs' : 'opacity-75'
-            }`}
-            style={{
-              backgroundColor: activeTab === 'codigo' ? theme.bgPanel : 'transparent',
-              color: theme.textPrimary,
-            }}
-          >
-            Código
-          </button>
         </div>
 
         <button
@@ -351,7 +335,7 @@ export default function App() {
                   </h1>
 
                   <p className="text-xs md:text-sm leading-relaxed" style={{ color: theme.textSecondary }}>
-                    Ponte en los zapatos de un científico ambiental: interactúa con los valores mediante los botones, descubre a qué hora exacta colapsan las canastillas del Colegio Orlando Fals Borda y activa las soluciones estratégicas para salvar nuestro espacio escolar.
+                    Ingresa tus propios números, prueba qué pasa si aumentan los estudiantes o los puestos ambulantes, y activa las soluciones estratégicas para ver en vivo cómo el camión de aseo, las islas ecológicas y la brigada estudiantil salvan nuestro colegio.
                   </p>
                 </div>
 
@@ -365,7 +349,7 @@ export default function App() {
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-3">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent flex items-end p-3">
                     <span className="text-[11px] text-white/95 font-medium">
                       Colegio Orlando Fals Borda · Proyecto Ambiental Escolar (PRAE)
                     </span>
@@ -386,6 +370,8 @@ export default function App() {
                   colorMode={colorMode}
                   params={params}
                   isPlaying={isPlaying}
+                  activeSolutionSim={activeSolutionSim}
+                  onClearSolutionSim={() => setActiveSolutionSim(null)}
                 />
 
                 <SimulationCharts
@@ -398,7 +384,7 @@ export default function App() {
                 />
               </div>
 
-              {/* Columna Derecha: Control Deck con botones y tonalidades */}
+              {/* Columna Derecha: Control Deck con botones y simulador de hechos */}
               <div className="xl:col-span-5">
                 <ControlDeck
                   currentHour={currentHour}
@@ -419,6 +405,8 @@ export default function App() {
                   onToggleColorMode={toggleColorMode}
                   params={params}
                   onParamsChange={setParams}
+                  activeSolutionSim={activeSolutionSim}
+                  onTriggerSolutionSim={handleTriggerSolutionSim}
                 />
               </div>
             </div>
@@ -434,11 +422,11 @@ export default function App() {
         )}
 
         {activeTab === 'soluciones' && (
-          <SectionSolutions themeId={themeId} colorMode={colorMode} />
-        )}
-
-        {activeTab === 'codigo' && (
-          <SectionSourceCode themeId={themeId} colorMode={colorMode} />
+          <SectionSolutions
+            themeId={themeId}
+            colorMode={colorMode}
+            onSimulateSolution={handleTriggerSolutionSim}
+          />
         )}
       </main>
 
